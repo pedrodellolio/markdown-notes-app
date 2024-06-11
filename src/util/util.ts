@@ -1,8 +1,5 @@
-const files = [
-  {
-    id: "abcd-000",
-    name: "Getting Started",
-    content: `Marked - Markdown Parser
+export function getDefaultContent() {
+  return `Marked - Markdown Parser
 ========================
 
 [Marked] lets you convert [Markdown] into HTML.  Markdown is a simple text format whose goal is to be very easy to read and write, even when not converted to HTML.  This demo page will let you type anything you like and see how it gets converted.  Live.  No more waiting around.
@@ -54,16 +51,5 @@ Ready to start writing?  Either start changing stuff on the left or
 
 [Marked]: https://github.com/markedjs/marked/
 [Markdown]: http://daringfireball.net/projects/markdown/
-`,
-  },
-];
-
-export async function getFileList() {
-  return files.map((file) => {
-    return { name: file.name, id: file.id };
-  });
-}
-
-export async function getFileById(id: string) {
-  return files.find((f) => f.id === id);
+`;
 }

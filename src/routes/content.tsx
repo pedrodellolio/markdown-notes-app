@@ -1,34 +1,51 @@
 import DOMPurify from "dompurify";
 import { marked } from "marked";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Mode } from "../models/mode";
-import { getFileById } from "../api/file";
-import { File } from "../models/file";
-import { useLoaderData } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getFileById, updateEntry } from "../api/entry";
 
-export async function loader({ params }: any) {
-  const file = await getFileById(params.id);
-  return { file };
-}
+const UPDATE_INTERVAL = 10000; // 10 seconds
 
 export default function Content() {
-  const { file } = useLoaderData() as { file: File };
+  const { pathname } = useLocation();
+  const fileId = pathname.split("/")[2];
 
-  const [input, setInput] = useState(file.content);
+  const [input, setInput] = useState("");
   const [mode, setMode] = useState<Mode>(Mode.PREVIEW);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
-  const { rowCount } = useMemo(() => {
+  const { data: entry, isFetched } = useQuery({
+    queryKey: ["entry", fileId],
+    queryFn: () => getFileById(fileId),
+    enabled: !!fileId,
+  });
+
+  const { mutateAsync } = useMutation({
+    mutationFn: async () => {
+      if (entry) updateEntry({ ...entry, content: input });
+    },
+  });
+
+  useEffect(() => {
+    if (isFetched && entry) {
+      const value = entry.content ?? "";
+      setInput(value);
+    }
+  }, [isFetched, entry]);
+
+  const { rowCount, wordCount } = useMemo(() => {
     const rowPattern = /\n|\r\n?/g;
-    const matches = input.match(rowPattern);
-    const rowCount = matches ? matches.length : 0;
-    return { rowCount };
-  }, [input]);
-
-  const { wordCount } = useMemo(() => {
     const wordPattern = /\S+/g;
-    const matches = input.match(wordPattern);
-    const wordCount = matches ? matches.length : 0;
-    return { wordCount };
+
+    const rowMatches = input.match(rowPattern);
+    const wordMatches = input.match(wordPattern);
+
+    const rowCount = rowMatches ? rowMatches.length : 0;
+    const wordCount = wordMatches ? wordMatches.length : 0;
+
+    return { rowCount, wordCount };
   }, [input]);
 
   const html = useMemo(() => {
@@ -38,6 +55,25 @@ export default function Content() {
       ),
     };
   }, [input]);
+
+  const updateContent = useCallback(async () => {
+    await mutateAsync();
+    setLastSaved(new Date());
+  }, [mutateAsync]);
+
+  useEffect(() => {
+    const intervalId = setInterval(updateContent, UPDATE_INTERVAL);
+    return () => {
+      clearInterval(intervalId);
+      updateContent(); // Atualiza o conteúdo quando o componente é desmontado
+    };
+  }, [updateContent]);
+
+  useEffect(() => {
+    return () => {
+      updateContent(); // Atualiza o conteúdo antes de desmontar o componente
+    };
+  }, [updateContent]);
 
   const nextMode = () => {
     setMode((prevMode) =>
@@ -70,6 +106,7 @@ export default function Content() {
       <footer
         className={`fixed bottom-0 left-0 right-0 py-1 px-6 mx-auto flex flex-row items-center justify-end gap-4 font-medium text-gray-500 text-xs bg-gray-200 z-10`}
       >
+        {lastSaved && <p>Last saved at {lastSaved.toLocaleTimeString()}</p>}
         <button onClick={nextMode}>{Mode[mode]}</button>
         <p>{wordCount} words</p>
         <p>{rowCount} lines</p>

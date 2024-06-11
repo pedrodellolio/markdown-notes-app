@@ -1,5 +1,6 @@
 import { Menu } from "lucide-react";
 import usePreferences from "../hooks/use-preferences";
+import { TopNavBreadcrumb } from "./top-nav-breadcrumb";
 
 export default function SideNav() {
   const { isMenuOpen, setIsMenuOpen } = usePreferences();
@@ -15,7 +16,7 @@ export default function SideNav() {
           <Menu className="text-gray-600 mt-1" />
         </button>
       )}
-      <p className="text-gray-500">Home &gt; Getting Started</p>
+      <TopNavBreadcrumb />
     </nav>
   );
 }

@@ -1,69 +1,52 @@
 import { ChevronRight, Folder, File } from "lucide-react";
 import usePreferences from "../hooks/use-preferences";
 import { Link, useLocation } from "react-router-dom";
-import { Entry, EntryType } from "../models/entry";
+import { EntryType } from "../models/entry";
 import NewEntryForm from "./forms/new-entry-form";
-import { useEffect, useRef, useState } from "react";
 import SideNavHeader from "./side-nav-header";
 import { useQuery } from "@tanstack/react-query";
 import { getEntries } from "../api/entry";
+import useEntries from "@/hooks/use-entries";
+import RenameEntryForm from "./forms/rename-entry-form";
 import { SideNavContext } from "./side-nav-context";
 
 export default function SideNav() {
   const { isMenuOpen } = usePreferences();
-  const [selectedEntry, setSelectedEntry] = useState<Entry>();
-  const [isCreatingEntry, setIsCreatingEntry] = useState({
-    state: false,
-    type: EntryType.FILE,
-  });
-
-  const asideRef = useRef<HTMLDivElement>(null);
+  const {
+    selected,
+    renaming,
+    isCreating,
+    setSelected,
+    setIsCreating,
+    setRenaming,
+  } = useEntries();
+  const location = useLocation();
+  const currentFileId = location.pathname.split("/").pop();
 
   const { data: entries } = useQuery({
     queryKey: ["entries"],
     queryFn: getEntries,
   });
 
-  const location = useLocation();
-  const currentFileId = location.pathname.split("/").pop();
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        asideRef.current &&
-        !asideRef.current.contains(event.target as Node)
-      ) {
-        setSelectedEntry(undefined);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [asideRef]);
+  const handleBlur = () => {
+    setSelected(undefined);
+    setRenaming(undefined);
+  };
 
   return (
-    <SideNavContext>
+    <>
       <aside
-        ref={asideRef}
         className={`fixed h-screen w-64 bg-white border border-r ${
           !isMenuOpen && "hidden"
         }`}
       >
-        <SideNavHeader setState={setIsCreatingEntry} />
+        <SideNavHeader setState={setIsCreating} />
         <ul className="pt-2">
-          {isCreatingEntry.state && (
-            <NewEntryForm
-              isCreatingEntry={isCreatingEntry}
-              setState={setIsCreatingEntry}
-            />
-          )}
+          {isCreating.state && <NewEntryForm />}
           {entries?.map((e) => {
-            const isSelected = e === selectedEntry;
+            const isSelected = e === selected;
             const isCurrentFile =
               e.type === EntryType.FILE && e.id === currentFileId;
-
             return (
               <li
                 className={`text-gray-600 cursor-pointer ${
@@ -73,32 +56,39 @@ export default function SideNav() {
                     ? "bg-gray-100 text-blue-800"
                     : "hover:text-gray-800 hover:bg-gray-100"
                 } py-[3px]`}
-                onClick={() => setSelectedEntry(e)}
+                onFocus={() => setSelected(e)}
+                onBlur={handleBlur}
                 key={e.id}
               >
-                {e.type === EntryType.FILE ? (
-                  <Link
-                    className="flex flex-row items-center gap-2 px-4 ml-[22px]"
-                    to={`file/${e.id}`}
-                  >
-                    <File size={16} className="mt-1" />
-                    <p>
-                      {e.name}
-                      <span className={`text-gray-400`}>.md</span>
-                    </p>
-                  </Link>
+                {e === renaming ? (
+                  <RenameEntryForm type={e.type} />
                 ) : (
-                  <p className="flex flex-row items-center gap-2 px-4">
-                    <ChevronRight size={14} />
-                    <Folder size={16} className="mt-[2px]" />
-                    {e.name}
-                  </p>
+                  <SideNavContext>
+                    {e.type === EntryType.FILE ? (
+                      <Link
+                        className="flex flex-row items-center gap-2 px-4 ml-[22px]"
+                        to={`file/${e.id}`}
+                      >
+                        <File size={16} className="mt-1" />
+                        <div className="flex flex-row items-center w-44">
+                          <p className="truncate">{e.name}</p>
+                          <span className={`text-gray-400`}>.md</span>
+                        </div>
+                      </Link>
+                    ) : (
+                      <p className="flex flex-row items-center gap-2 px-4">
+                        <ChevronRight size={14} />
+                        <Folder size={16} className="mt-[2px]" />
+                        <span className="truncate w-44">{e.name}</span>
+                      </p>
+                    )}
+                  </SideNavContext>
                 )}
               </li>
             );
           })}
         </ul>
       </aside>
-    </SideNavContext>
+    </>
   );
 }

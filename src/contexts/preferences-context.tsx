@@ -13,7 +13,7 @@ const PreferencesContext = createContext<PreferencesContextData>(
   {} as PreferencesContextData
 );
 export const PreferencesProvider = ({ children }: Props) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   return (
     <PreferencesContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>

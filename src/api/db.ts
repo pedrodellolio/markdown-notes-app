@@ -43,7 +43,6 @@ export const getStoreData = <T>(
       const tx = db.transaction(storeName, "readonly");
       const store = tx.objectStore(storeName);
       const getRequest = store.getAll(key);
-
       getRequest.onsuccess = () => {
         resolve(getRequest.result);
       };

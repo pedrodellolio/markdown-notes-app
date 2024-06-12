@@ -2,19 +2,19 @@ import DOMPurify from "dompurify";
 import { marked } from "marked";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { Mode } from "../models/mode";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getFileById, updateEntry } from "../api/entry";
 
-const UPDATE_INTERVAL = 10000; // 10 seconds
-
 export default function Content() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const fileId = pathname.split("/")[2];
 
   const [input, setInput] = useState("");
   const [mode, setMode] = useState<Mode>(Mode.PREVIEW);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const updateInterval = 10000; // 10 seconds
 
   const { data: entry, isFetched } = useQuery({
     queryKey: ["entry", fileId],
@@ -29,9 +29,9 @@ export default function Content() {
   });
 
   useEffect(() => {
-    if (isFetched && entry) {
-      const value = entry.content ?? "";
-      setInput(value);
+    if (isFetched) {
+      if (entry) setInput(entry.content ?? "");
+      else navigate("/");
     }
   }, [isFetched, entry]);
 
@@ -56,24 +56,20 @@ export default function Content() {
     };
   }, [input]);
 
-  const updateContent = useCallback(async () => {
-    await mutateAsync();
-    setLastSaved(new Date());
-  }, [mutateAsync]);
+  const saveContent = useCallback(async () => {
+    if (entry?.content !== input) {
+      await mutateAsync();
+      setLastSaved(new Date());
+    }
+  }, [entry, mutateAsync]);
 
   useEffect(() => {
-    const intervalId = setInterval(updateContent, UPDATE_INTERVAL);
+    const intervalId = setInterval(saveContent, updateInterval);
     return () => {
       clearInterval(intervalId);
-      updateContent(); // Atualiza o conteúdo quando o componente é desmontado
+      // saveContent();
     };
-  }, [updateContent]);
-
-  useEffect(() => {
-    return () => {
-      updateContent(); // Atualiza o conteúdo antes de desmontar o componente
-    };
-  }, [updateContent]);
+  }, [saveContent, updateInterval]);
 
   const nextMode = () => {
     setMode((prevMode) =>
@@ -106,11 +102,11 @@ export default function Content() {
       <footer
         className={`fixed bottom-0 left-0 right-0 py-1 px-6 mx-auto flex flex-row items-center justify-end gap-4 font-medium text-gray-500 text-xs bg-gray-200 z-10`}
       >
-        {lastSaved && <p>Last saved at {lastSaved.toLocaleTimeString()}</p>}
         <button onClick={nextMode}>{Mode[mode]}</button>
         <p>{wordCount} words</p>
         <p>{rowCount} lines</p>
         <p>{byteSize(input)} bytes</p>
+        {lastSaved && <p>Last saved at {lastSaved.toLocaleTimeString()}</p>}
       </footer>
     </div>
   );

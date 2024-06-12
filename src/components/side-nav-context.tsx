@@ -1,69 +1,87 @@
+import { deleteEntry } from "@/api/entry";
 import {
   ContextMenu,
-  ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
   ContextMenuSeparator,
-  ContextMenuShortcut,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import useEntries from "@/hooks/use-entries";
+import { EntryType } from "@/models/entry";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReactNode } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Props {
   children: ReactNode;
 }
 
 export function SideNavContext({ children }: Props) {
+  const queryClient = useQueryClient();
+  const { selected, setRenaming, setIsCreating } = useEntries();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const { mutateAsync } = useMutation({
+    mutationFn: async () => {
+      if (selected) deleteEntry(selected.id);
+    },
+    onSuccess: () => {
+      if (pathname === `/file/${selected?.id}`) navigate("/");
+      queryClient.invalidateQueries({ queryKey: ["entries"] });
+    },
+  });
+
+  const handleDeleteEntry = () => {
+    mutateAsync();
+  };
+
+  const handleRenameEntry = () => {
+    if (selected) setRenaming(selected);
+  };
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        <ContextMenuItem inset>
-          Back
-          <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+        <ContextMenuItem inset onClick={() => navigate(`file/${selected?.id}`)}>
+          Open
         </ContextMenuItem>
-        <ContextMenuItem inset disabled>
-          Forward
-          <ContextMenuShortcut>⌘]</ContextMenuShortcut>
+        <ContextMenuItem
+          inset
+          onClick={() =>
+            window.open(
+              `${window.location.origin}/file/${selected?.id}`,
+              "_blank"
+            )
+          }
+        >
+          Open in New Tab
         </ContextMenuItem>
-        <ContextMenuItem inset>
-          Reload
-          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+        <ContextMenuSeparator />
+        <ContextMenuItem
+          inset
+          onClick={() => setIsCreating({ state: true, type: EntryType.FILE })}
+        >
+          New File
         </ContextMenuItem>
-        <ContextMenuSub>
-          <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
-          <ContextMenuSubContent className="w-48">
-            <ContextMenuItem>
-              Save Page As...
-              <ContextMenuShortcut>⇧⌘S</ContextMenuShortcut>
-            </ContextMenuItem>
-            <ContextMenuItem>Create Shortcut...</ContextMenuItem>
-            <ContextMenuItem>Name Window...</ContextMenuItem>
+        <ContextMenuItem
+          inset
+          onClick={() => setIsCreating({ state: true, type: EntryType.FOLDER })}
+        >
+          New Folder
+        </ContextMenuItem>
+        {selected && (
+          <>
             <ContextMenuSeparator />
-            <ContextMenuItem>Developer Tools</ContextMenuItem>
-          </ContextMenuSubContent>
-        </ContextMenuSub>
-        <ContextMenuSeparator />
-        <ContextMenuCheckboxItem checked>
-          Show Bookmarks Bar
-          <ContextMenuShortcut>⌘⇧B</ContextMenuShortcut>
-        </ContextMenuCheckboxItem>
-        <ContextMenuCheckboxItem>Show Full URLs</ContextMenuCheckboxItem>
-        <ContextMenuSeparator />
-        <ContextMenuRadioGroup value="pedro">
-          <ContextMenuLabel inset>People</ContextMenuLabel>
-          <ContextMenuSeparator />
-          <ContextMenuRadioItem value="pedro">
-            Pedro Duarte
-          </ContextMenuRadioItem>
-          <ContextMenuRadioItem value="colm">Colm Tuite</ContextMenuRadioItem>
-        </ContextMenuRadioGroup>
+            <ContextMenuItem inset onClick={handleRenameEntry}>
+              Rename
+            </ContextMenuItem>
+            <ContextMenuItem inset onClick={handleDeleteEntry}>
+              Delete
+            </ContextMenuItem>
+          </>
+        )}
       </ContextMenuContent>
     </ContextMenu>
   );

@@ -1,17 +1,23 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { EntryType } from "../../models/entry";
-import { createEntry } from "../../api/entry";
-import { Folder, File } from "lucide-react";
+import { updateEntry } from "../../api/entry";
+import { File, Folder } from "lucide-react";
 import useEntries from "@/hooks/use-entries";
+import { EntryType } from "@/models/entry";
 
-export default function NewEntryForm() {
-  const { isCreating, setIsCreating } = useEntries();
+interface Props {
+  type: EntryType;
+}
+
+export default function RenameEntryForm({ type }: Props) {
+  const { renaming, setRenaming } = useEntries();
   const queryClient = useQueryClient();
-  const [newEntryName, setNewEntryName] = useState("");
+  const [newEntryName, setNewEntryName] = useState(
+    renaming ? renaming.name : ""
+  );
 
-  const { mutateAsync: createAsync } = useMutation({
-    mutationFn: createEntry,
+  const { mutateAsync: updateAsync } = useMutation({
+    mutationFn: updateEntry,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
     },
@@ -26,23 +32,21 @@ export default function NewEntryForm() {
     }
   };
 
-  const handleCreateEntry = () => {
-    createAsync({ name: newEntryName, type: isCreating.type });
-    setIsCreating({ state: false, type: EntryType.FILE });
-    setNewEntryName("");
+  const handleRenamingEntry = () => {
+    if (renaming) {
+      updateAsync({ ...renaming, name: newEntryName });
+      setRenaming(undefined);
+    }
   };
 
   const handleBlur = () => {
-    if (newEntryName !== "") handleCreateEntry();
-    else {
-      setIsCreating({ state: false, type: EntryType.FILE });
-      setNewEntryName("");
-    }
+    if (newEntryName !== "") handleRenamingEntry();
+    else setRenaming(undefined);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleCreateEntry();
+    handleRenamingEntry();
   };
 
   return (
@@ -50,20 +54,22 @@ export default function NewEntryForm() {
       onSubmit={handleSubmit}
       className="flex flex-row items-center gap-2 text-gray-600 mb-1 ml-[38px]"
     >
-      {isCreating.type === EntryType.FILE ? (
+      {type === EntryType.FILE ? (
         <File size={18} className="mt-1" />
       ) : (
         <Folder size={18} className="mt-1" />
       )}
       <input
         autoFocus
+        type="text"
+        autoComplete="off"
         name="entryName"
         value={newEntryName}
         onChange={(e) => setNewEntryName(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
-        autoComplete="off"
-        className="w-full mt-1"
+        onFocus={(e) => e.target.select()}
+        className="w-full h-6"
       />
     </form>
   );

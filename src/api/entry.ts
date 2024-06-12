@@ -1,5 +1,5 @@
 import { Entry, EntryType } from "../models/entry";
-import { Stores, addData, getStoreData, updateData } from "./db";
+import { Stores, addData, deleteData, getStoreData, updateData } from "./db";
 
 export async function getEntries() {
   try {
@@ -53,6 +53,18 @@ export async function createEntry(entry: { name: string; type: EntryType }) {
 export async function updateEntry(entry: Entry) {
   try {
     await updateData<Entry>(Stores.Entries, entry.id, entry);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("Something went wrong");
+    }
+  }
+}
+
+export async function deleteEntry(id: string) {
+  try {
+    await deleteData(Stores.Entries, id);
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error(err.message);

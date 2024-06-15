@@ -1,20 +1,15 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateEntry } from "../../api/entry";
-import { File, Folder } from "lucide-react";
 import useEntries from "@/hooks/use-entries";
-import { EntryType } from "@/models/entry";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { DialogClose } from "../ui/dialog";
 
-interface Props {
-  type: EntryType;
-}
-
-export default function RenameEntryForm({ type }: Props) {
-  const { renaming, setRenaming } = useEntries();
+export default function RenameEntryForm() {
   const queryClient = useQueryClient();
-  const [newEntryName, setNewEntryName] = useState(
-    renaming ? renaming.name : ""
-  );
+  const { selected } = useEntries();
+  const [newEntryName, setNewEntryName] = useState(selected?.name ?? "");
 
   const { mutateAsync: updateAsync } = useMutation({
     mutationFn: updateEntry,
@@ -23,54 +18,29 @@ export default function RenameEntryForm({ type }: Props) {
     },
   });
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      e.currentTarget.form?.dispatchEvent(
-        new Event("submit", { bubbles: true, cancelable: true })
-      );
-    }
-  };
-
-  const handleRenamingEntry = () => {
-    if (renaming) {
-      updateAsync({ ...renaming, name: newEntryName });
-      setRenaming(undefined);
-    }
-  };
-
-  const handleBlur = () => {
-    if (newEntryName !== "") handleRenamingEntry();
-    else setRenaming(undefined);
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleRenamingEntry();
+    if (selected) updateAsync({ ...selected, name: newEntryName });
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-row items-center gap-2 text-gray-600 mb-1 ml-[38px]"
+      className="flex flex-row items-center gap-2 text-gray-600"
     >
-      {type === EntryType.FILE ? (
-        <File size={18} className="mt-1" />
-      ) : (
-        <Folder size={18} className="mt-1" />
-      )}
-      <input
+      <Input
         autoFocus
-        type="text"
         autoComplete="off"
+        type="text"
         name="entryName"
         value={newEntryName}
         onChange={(e) => setNewEntryName(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
         onFocus={(e) => e.target.select()}
-        className="w-full h-6"
       />
+
+      <DialogClose asChild>
+        <Button type="submit">Rename</Button>
+      </DialogClose>
     </form>
   );
 }

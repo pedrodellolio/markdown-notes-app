@@ -17,7 +17,8 @@ export const initDB = (): Promise<boolean> => {
       const db = request.result;
 
       if (!db.objectStoreNames.contains(Stores.Entries)) {
-        db.createObjectStore(Stores.Entries, { keyPath: "id" });
+        const store = db.createObjectStore(Stores.Entries, { keyPath: "id" });
+        store.createIndex("name", "name", { unique: false });
       }
     };
 
@@ -45,6 +46,36 @@ export const getStoreData = <T>(
       const getRequest = store.getAll(key);
       getRequest.onsuccess = () => {
         resolve(getRequest.result);
+      };
+    };
+
+    request.onerror = () => {
+      resolve([]);
+    };
+  });
+};
+
+export const getStoreDataByIndex = <T>(
+  storeName: Stores,
+  indexName: string,
+  indexValue: string
+): Promise<T[]> => {
+  return new Promise((resolve) => {
+    const request = indexedDB.open(DB_NAME, version);
+    
+    request.onsuccess = () => {
+      const db = request.result;
+      const tx = db.transaction(storeName, "readonly");
+      const store = tx.objectStore(storeName);
+      const index = store.index(indexName);
+      const getRequest = index.getAll(indexValue);
+
+      getRequest.onsuccess = () => {
+        resolve(getRequest.result);
+      };
+
+      getRequest.onerror = () => {
+        resolve([]);
       };
     };
 
@@ -165,7 +196,7 @@ export const firstTimeRegistered = async () => {
         name: "Getting Started",
         type: EntryType.FILE,
         content: getDefaultContent(),
-      });
+      } as Entry);
     }
   } else {
     console.error("Failed to initialize the database.");

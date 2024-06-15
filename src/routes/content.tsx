@@ -4,23 +4,25 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { Mode } from "../models/mode";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getFileById, updateEntry } from "../api/entry";
+import { getEntryByPath, updateEntry } from "../api/entry";
+import Footer from "@/components/footer";
 
 export default function Content() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const fileId = pathname.split("/")[2];
-
+  const filePath = decodeURIComponent(pathname).split("/").slice(2).join("/");
   const [input, setInput] = useState("");
   const [mode, setMode] = useState<Mode>(Mode.PREVIEW);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const updateInterval = 10000; // 10 seconds
 
   const { data: entry, isFetched } = useQuery({
-    queryKey: ["entry", fileId],
-    queryFn: () => getFileById(fileId),
-    enabled: !!fileId,
+    queryKey: ["entry", filePath],
+    queryFn: () => getEntryByPath(filePath),
+    enabled: !!filePath,
   });
+
+  console.log(filePath);
 
   const { mutateAsync } = useMutation({
     mutationFn: async () => {
@@ -93,21 +95,20 @@ export default function Content() {
           </form>
         ) : (
           <article
-            className="prose mx-auto w-full mt-10 px-6 pb-6"
+            className="prose mx-auto w-full mt-10 px-6 pb-6 text-card-foreground/80"
             dangerouslySetInnerHTML={html}
           ></article>
         )}
       </div>
 
-      <footer
-        className={`fixed bottom-0 left-0 right-0 py-1 px-6 mx-auto flex flex-row items-center justify-end gap-4 font-medium text-gray-500 text-xs bg-gray-200 z-10`}
-      >
-        <button onClick={nextMode}>{Mode[mode]}</button>
-        <p>{wordCount} words</p>
-        <p>{rowCount} lines</p>
-        <p>{byteSize(input)} bytes</p>
-        {lastSaved && <p>Last saved at {lastSaved.toLocaleTimeString()}</p>}
-      </footer>
+      <Footer
+        wordCount={wordCount}
+        rowCount={rowCount}
+        bytes={byteSize(input)}
+        lastSaved={lastSaved}
+        mode={mode}
+        nextMode={nextMode}
+      />
     </div>
   );
 }

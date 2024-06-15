@@ -1,11 +1,12 @@
-export interface Entry {
-  id: string;
-  name: string;
-  content?: string;
-  type: EntryType;
+export enum EntryType {
+  FILE = "FILE",
+  FOLDER = "FOLDER",
 }
 
-export enum EntryType {
-  FILE,
-  FOLDER,
+export interface Entry {
+  id: string;
+  parentId?: string;
+  name: string;
+  type: EntryType;
+  content?: string;
 }

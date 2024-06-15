@@ -3,6 +3,8 @@ import { Dispatch, ReactNode, createContext, useState } from "react";
 interface PreferencesContextData {
   isMenuOpen: boolean;
   setIsMenuOpen: Dispatch<React.SetStateAction<boolean>>;
+  isContextOpen: boolean;
+  setIsContextOpen: Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Props {
@@ -14,9 +16,12 @@ const PreferencesContext = createContext<PreferencesContextData>(
 );
 export const PreferencesProvider = ({ children }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isContextOpen, setIsContextOpen] = useState(false);
 
   return (
-    <PreferencesContext.Provider value={{ isMenuOpen, setIsMenuOpen }}>
+    <PreferencesContext.Provider
+      value={{ isMenuOpen, setIsMenuOpen, isContextOpen, setIsContextOpen }}
+    >
       {children}
     </PreferencesContext.Provider>
   );

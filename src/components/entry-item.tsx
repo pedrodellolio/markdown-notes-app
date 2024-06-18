@@ -81,8 +81,8 @@ function EntryItem({ entry }: EntryItemProps) {
                 onContextMenu={handleClick}
                 className="w-full"
               >
-                <span className="text-card-foreground/80">{entry.name}</span>
-                <span className="text-card-foreground/35">.md</span>
+                <span className="text-card-foreground/80">{entry.name}.md</span>
+                {/* <span className="text-card-foreground/35">.md</span> */}
               </Link>
             ) : (
               <span

@@ -1,3 +1,5 @@
+import { Descendant } from "slate";
+
 export enum EntryType {
   FILE = "FILE",
   FOLDER = "FOLDER",

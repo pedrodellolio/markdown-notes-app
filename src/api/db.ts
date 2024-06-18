@@ -1,5 +1,4 @@
 import { Entry, EntryType } from "../models/entry";
-import { getDefaultContent } from "../util/util";
 
 const DB_NAME = "db";
 const version = 1;
@@ -62,7 +61,7 @@ export const getStoreDataByIndex = <T>(
 ): Promise<T[]> => {
   return new Promise((resolve) => {
     const request = indexedDB.open(DB_NAME, version);
-    
+
     request.onsuccess = () => {
       const db = request.result;
       const tx = db.transaction(storeName, "readonly");
@@ -191,12 +190,14 @@ export const firstTimeRegistered = async () => {
   if (dbInitialized) {
     const entries = await getStoreData<Entry>(Stores.Entries);
     if (entries.length === 0) {
-      await addData(Stores.Entries, {
+      const response = await addData(Stores.Entries, {
         id: crypto.randomUUID(),
         name: "Getting Started",
         type: EntryType.FILE,
-        content: getDefaultContent(),
+        // content: getDefaultContent(),
       } as Entry);
+
+      if (typeof response != "string") return response;
     }
   } else {
     console.error("Failed to initialize the database.");

@@ -8,9 +8,7 @@ export default function SideNav() {
 
   return (
     <nav
-      className={`fixed top-0 ${
-        isMenuOpen ? "left-64" : "left-0"
-      } right-0 h-12 px-6 mx-auto flex flex-row items-center gap-6 font-medium text-sm bg-background z-10`}
+      className={`px-6 py-2 mx-auto flex flex-row items-center justify-between w-full gap-6 font-medium text-sm bg-background`}
     >
       {!isMenuOpen && (
         <button onClick={() => setIsMenuOpen(true)}>

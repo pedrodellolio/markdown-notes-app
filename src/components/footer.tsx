@@ -1,31 +1,35 @@
-import { Mode } from "@/models/mode";
+import useEntries from "@/hooks/use-entries";
+import { useMemo } from "react";
 
-interface Props {
-  wordCount: number;
-  rowCount: number;
-  bytes: number;
-  lastSaved: Date | null;
-  mode: Mode;
-  nextMode: () => void;
-}
+export default function Footer() {
+  const { current } = useEntries();
 
-export default function Footer({
-  wordCount,
-  rowCount,
-  bytes,
-  lastSaved,
-  mode,
-  nextMode,
-}: Props) {
+  const { rowCount, wordCount, bytes } = useMemo(() => {
+    if (!current) return { rowCount: 0, wordCount: 0, bytes: 0 };
+
+    const rowPattern = /\n|\r\n?/g;
+    const wordPattern = /\S+/g;
+
+    const rowMatches = current.content?.match(rowPattern);
+    const wordMatches = current.content?.match(wordPattern);
+
+    const rowCount = rowMatches ? rowMatches.length : 0;
+    const wordCount = wordMatches ? wordMatches.length : 0;
+
+    const bytes = new Blob([current.content]).size;
+    return { rowCount, wordCount, bytes };
+  }, [current]);
+
   return (
     <footer
-      className={`fixed bottom-0 left-0 right-0 py-1 px-6 mx-auto flex flex-row items-center justify-end gap-4 font-medium text-muted-foreground text-xs bg-secondary z-10`}
+      className={`w-full h-6 flex flex-row items-center justify-end gap-4 px-4 font-medium text-muted-foreground text-xs bg-secondary`}
     >
-      <button onClick={nextMode}>{Mode[mode]}</button>
       <p>{wordCount} words</p>
       <p>{rowCount} lines</p>
       <p>{bytes} bytes</p>
-      {lastSaved && <p>Last saved at {lastSaved.toLocaleTimeString()}</p>}
+      {/* {props.lastSaved && (
+        <p>Last saved at {props.lastSaved.toLocaleTimeString()}</p>
+      )} */}
     </footer>
   );
 }

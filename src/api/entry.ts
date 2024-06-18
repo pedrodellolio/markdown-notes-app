@@ -102,7 +102,7 @@ export async function getEntryByPath(path: string) {
     }
 
     if (!currentEntry) {
-      return null;
+      return undefined;
     }
   }
 

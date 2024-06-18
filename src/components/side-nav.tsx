@@ -18,7 +18,7 @@ export default function SideNav() {
   return (
     <>
       <aside
-        className={`fixed h-screen w-64 bg-background border border-r ${
+        className={`relative w-64 flex-none overflow-hidden bg-background z-10 border border-r ${
           !isMenuOpen && "hidden"
         }`}
       >
@@ -29,6 +29,7 @@ export default function SideNav() {
             <EntryItem key={entry.id} entry={entry} />
           ))}
         </ul>
+
       </aside>
     </>
   );

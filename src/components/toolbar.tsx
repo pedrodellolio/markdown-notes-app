@@ -1,18 +1,12 @@
-import { Heading1, Heading2 } from "lucide-react";
-import { MarkButton } from "./mark-button";
-import { BlockButton } from "./block-button";
+import { Button } from "./ui/button";
 
-function Toolbar() {
+function Toolbar() {  
+  const applyFormat = (format: string) => {
+    return format;
+  };
   return (
-    <div className="flex flex-row items-center gap-4 pb-8">
-      <MarkButton format="bold" icon="format_bold" />
-      <MarkButton format="italic" icon="format_italic" />
-      <MarkButton format="underline" icon="format_underlined" />
-      <MarkButton format="code" icon="code" />
-      <BlockButton format="heading-one" icon={<Heading1 />} />
-      <BlockButton format="heading-two" icon={<Heading2 />} />
-
-      {/* <Button
+    <div className="flex flex-row justify-center items-center gap-4 bg-editor">
+      <Button
         className="bg-transparent text-muted-foreground hover:text-blue-500 hover:bg-transparent"
         onClick={() => applyFormat("bold")}
       >
@@ -59,7 +53,7 @@ function Toolbar() {
         onClick={() => applyFormat("code")}
       >
         Code
-      </Button> */}
+      </Button>
     </div>
   );
 }

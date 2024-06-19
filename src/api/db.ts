@@ -1,3 +1,4 @@
+import { getDefaultContent } from "@/util/util";
 import { Entry, EntryType } from "../models/entry";
 
 const DB_NAME = "db";
@@ -194,7 +195,7 @@ export const firstTimeRegistered = async () => {
         id: crypto.randomUUID(),
         name: "Getting Started",
         type: EntryType.FILE,
-        // content: getDefaultContent(),
+        content: getDefaultContent(),
       } as Entry);
 
       if (typeof response != "string") return response;

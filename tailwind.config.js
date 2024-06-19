@@ -9,6 +9,10 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      sans: ["Roboto"],
+      mono: ["JetBrains Mono Variable", "ui-monospace", "monospace"],
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -50,6 +54,9 @@ module.exports = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        editor: {
+          DEFAULT: "hsl(var(--editor))",
         },
       },
       borderRadius: {

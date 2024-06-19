@@ -7,6 +7,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Content from "./routes/content";
 import { EntriesProvider } from "./contexts/entries-context";
 import { ThemeProvider } from "./components/theme-provider";
+import "@fontsource-variable/jetbrains-mono";
+import "@fontsource/geist-mono";
+import "@fontsource/fira-mono";
+import "@fontsource/fira-sans";
+import "@fontsource-variable/inter";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([

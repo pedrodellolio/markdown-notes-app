@@ -16,7 +16,7 @@ export default function Footer() {
     const rowCount = rowMatches ? rowMatches.length : 0;
     const wordCount = wordMatches ? wordMatches.length : 0;
 
-    const bytes = new Blob([current.content]).size;
+    const bytes = new Blob([current.content ?? ""]).size;
     return { rowCount, wordCount, bytes };
   }, [current]);
 

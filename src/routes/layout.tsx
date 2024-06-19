@@ -14,12 +14,12 @@ export default function Layout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    firstTimeRegistered().then((defaultEntry?: Entry) => {
+    firstTimeRegistered().then((defaultEntry) => {
       setIsDbInitialized(true);
 
       if (defaultEntry) return navigate(`/file/${defaultEntry.id}`);
       getEntryByName("Getting Started").then((entry) =>
-        navigate(`/file/${entry.id}`)
+        navigate(`/file/${entry?.id}`)
       );
     });
   }, []);
@@ -29,7 +29,7 @@ export default function Layout() {
     <div className="relative flex flex-row w-full overflow-hidden">
       {isMenuOpen && <SideNav />}
       <div className="flex flex-col w-full h-screen overflow-hidden">
-        <TopNav />
+        {/* <TopNav /> */}
         <Outlet />
         <Footer />
       </div>

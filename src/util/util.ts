@@ -1,55 +1,111 @@
 export function getDefaultContent() {
-  return `Marked - Markdown Parser
-========================
+  return `# Introdução ao Markdown
 
-[Marked] lets you convert [Markdown] into HTML.  Markdown is a simple text format whose goal is to be very easy to read and write, even when not converted to HTML.  This demo page will let you type anything you like and see how it gets converted.  Live.  No more waiting around.
+Markdown é uma linguagem de marcação leve, criada por John Gruber e Aaron Swartz, que permite a formatação de texto de forma simples e intuitiva. É amplamente utilizado em plataformas como GitHub, Reddit, e blogs, devido à sua simplicidade e legibilidade.
 
-How To Use The Demo
--------------------
+## Vantagens do Markdown
 
-1. Type in stuff on the left.
-2. See the live updates on the right.
+- **Simplicidade**: Facilita a escrita e leitura de texto formatado.
+- **Portabilidade**: Arquivos de texto em Markdown são pequenos e podem ser facilmente transferidos entre sistemas.
+- **Conversão**: Pode ser convertido para diversos formatos, como HTML, PDF, e outros.
 
-That's it.  Pretty simple.  There's also a drop-down option above to switch between various views:
+## Como Utilizar o Markdown
 
-- **Preview:**  A live display of the generated HTML as it would render in a browser.
-- **HTML Source:**  The generated HTML before your browser makes it pretty.
-- **Lexer Data:**  What [marked] uses internally, in case you like gory stuff like this.
-- **Quick Reference:**  A brief run-down of how to format things using markdown.
+A seguir, algumas instruções básicas sobre como usar Markdown:
 
-Why Markdown?
--------------
+### Cabeçalhos
 
-It's easy.  It's not overly bloated, unlike HTML.  Also, as the creator of [markdown] says,
+Os cabeçalhos são definidos usando o símbolo \`#\`. Quanto mais \`#\`, menor o nível do cabeçalho.
 
-> The overriding design goal for Markdown's
-> formatting syntax is to make it as readable
-> as possible. The idea is that a
-> Markdown-formatted document should be
-> publishable as-is, as plain text, without
-> looking like it's been marked up with tags
-> or formatting instructions.
+\`\`\`markdown
+# Cabeçalho de nível 1
+## Cabeçalho de nível 2
+### Cabeçalho de nível 3
+\`\`\`
 
-Ready to start writing?  Either start changing stuff on the left or
-[clear everything](/demo/?text=) with a simple click.
+### Ênfase
 
-[Marked]: https://github.com/markedjs/marked/
-[Markdown]: http://daringfireball.net/projects/markdown/
+Para adicionar ênfase ao texto, você pode usar asteriscos ou sublinhados.
 
-It's easy.  It's not overly bloated, unlike HTML.  Also, as the creator of [markdown] says,
+- **Negrito**: Use \`**texto**\` ou \`__texto__\`.
+- *Itálico*: Use \`*texto*\` ou \`_texto_\`.
+- ~~Tachado~~: Use \`~~texto~~\`.
 
-> The overriding design goal for Markdown's
-> formatting syntax is to make it as readable
-> as possible. The idea is that a
-> Markdown-formatted document should be
-> publishable as-is, as plain text, without
-> looking like it's been marked up with tags
-> or formatting instructions.
+\`\`\`markdown
+**Negrito**
+*Itálico*
+~~Tachado~~
+\`\`\`
 
-Ready to start writing?  Either start changing stuff on the left or
-[clear everything](/demo/?text=) with a simple click.
+### Listas
 
-[Marked]: https://github.com/markedjs/marked/
-[Markdown]: http://daringfireball.net/projects/markdown/
+Você pode criar listas ordenadas e não ordenadas.
+
+- **Listas não ordenadas**: Use \`-\`, \`+\`, ou \`*\`.
+
+\`\`\`markdown
+- Item 1
+- Item 2
+  - Subitem 1
+  - Subitem 2
+\`\`\`
+
+- **Listas ordenadas**: Use números seguidos de ponto.
+
+\`\`\`markdown
+1. Primeiro item
+2. Segundo item
+   1. Subitem 1
+   2. Subitem 2
+\`\`\`
+
+### Links
+
+Para criar links, use colchetes \`[]\` para o texto do link e parênteses \`()\` para a URL.
+
+\`\`\`markdown
+[OpenAI](https://www.openai.com)
+\`\`\`
+
+### Imagens
+
+Para inserir imagens, a sintaxe é similar à dos links, mas com um ponto de exclamação \`!\` antes.
+
+\`\`\`markdown
+![Alt text](URL da imagem)
+\`\`\`
+
+### Blocos de Código
+
+Para incluir blocos de código, use três crases \`\`\` antes e depois do código.
+
+\`\`\`markdown
+\`\`\`
+print("Hello, World!")
+\`\`\`
+\`\`\`
+
+### Citações
+
+Para criar citações, use o símbolo \`>\`.
+
+\`\`\`markdown
+> Esta é uma citação.
+\`\`\`
+
+### Tabelas
+
+Para criar tabelas, use barras verticais \`|\` e hífens \`-\`.
+
+\`\`\`markdown
+| Coluna 1 | Coluna 2 |
+|----------|----------|
+| Linha 1  | Valor 1  |
+| Linha 2  | Valor 2  |
+\`\`\`
+
+## Conclusão
+
+Markdown é uma ferramenta poderosa para criar textos formatados de maneira simples e eficiente. Com estas instruções básicas, você já pode começar a utilizar Markdown em seus projetos e documentos.
 `;
 }

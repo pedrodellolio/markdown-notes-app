@@ -27,6 +27,7 @@ O Markdown Notes é um **edit or de markdown** desenvolvido em **React**.
 - Possibilidade de exportar arquivos
 - Melhorias no suporte para mobile
 - Melhorias e correções de bugs visuais
+- Tratamento de erros ao fazer operações com o banco
 ---
 
 ## Instalação e Uso

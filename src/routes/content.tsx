@@ -1,10 +1,9 @@
-import { useLocation } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-// import MarkdownEditor from "@/components/markdown-editor";
+import { useBeforeUnload, useParams } from "react-router-dom";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
-import { getEntryByName, getEntryByPath } from "@/api/entry";
+import { getEntryById, updateEntry } from "@/api/entry";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -12,23 +11,44 @@ import {
 } from "@/components/ui/resizable";
 import useEntries from "@/hooks/use-entries";
 import MarkdownEditor from "@/components/markdown-editor";
+import EditorPlaceholder from "@/components/editor-placeholder";
+
+export const entryContentQuery = (id: string) => ({
+  queryKey: ["entry", id],
+  queryFn: async () => getEntryById(id),
+});
+
+export const loader =
+  (qc: QueryClient) =>
+  async ({ params }: any) => {
+    const query = entryContentQuery(params.contactId);
+    return qc.getQueryData(query.queryKey) ?? (await qc.fetchQuery(query));
+  };
 
 export default function Content() {
-  const { setCurrent } = useEntries();
-  const { pathname } = useLocation();
-  const filePath = decodeURIComponent(pathname).split("/").slice(2).join("/");
-  const [input, setInput] = useState<string>("");
-
-  const { data: entry } = useQuery({
-    queryKey: ["entry", filePath],
-    queryFn: async () => {
-      const entry = await getEntryByPath(filePath);
-      if (!entry) return await getEntryByName("Getting Started");
-      entry.content && setInput(entry.content);
-      setCurrent(entry);
-      return entry;
-    },
+  const params = useParams() as any;
+  const { setCurrent, setLastSaved } = useEntries();
+  const { data: entry } = useQuery(entryContentQuery(params.entryId));
+  const { mutateAsync } = useMutation({
+    mutationFn: async (value: string) =>
+      entry && updateEntry({ ...entry, content: value }),
+    onSuccess: () => setLastSaved(new Date()),
   });
+
+  const [input, setInput] = useState("");
+
+  useEffect(() => {
+    if (entry) {
+      setCurrent(entry);
+      setInput(entry.content ?? "");
+    }
+  }, [entry, setCurrent]);
+
+  useBeforeUnload(
+    useCallback(() => {
+      if (entry && input !== entry.content) mutateAsync(input);
+    }, [entry, input, mutateAsync])
+  );
 
   const html = useMemo(() => {
     return {
@@ -41,14 +61,16 @@ export default function Content() {
   return (
     <ResizablePanelGroup direction="horizontal" className="h-full">
       <ResizablePanel defaultSize={50} minSize={20}>
-        {entry && (
-          <MarkdownEditor entry={entry} input={input} setInput={setInput} />
+        {entry ? (
+          <MarkdownEditor input={input} setInput={setInput} />
+        ) : (
+          <EditorPlaceholder />
         )}
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={50} minSize={20}>
         <div
-          className="p-6 max-w-none prose prose-md text-card-foreground/80 dark:prose-invert bg-muted/80 break-words h-full overflow-y-scroll overflow-x-hidden"
+          className="p-6 max-w-none prose prose-md text-card-foreground/80 dark:prose-invert bg-muted/50 break-words h-full overflow-y-auto overflow-x-hidden"
           dangerouslySetInnerHTML={html}
         ></div>
       </ResizablePanel>

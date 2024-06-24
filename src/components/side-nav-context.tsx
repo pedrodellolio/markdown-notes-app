@@ -27,17 +27,18 @@ interface Props {
 
 export function SideNavContext({ children }: Props) {
   const queryClient = useQueryClient();
-  const { selected, setCreating } = useEntries();
+  const { selected, setSelected, setCreating } = useEntries();
   const { setIsContextOpen } = usePreferences();
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const { mutateAsync } = useMutation({
-    mutationFn: async () => selected && deleteEntry(selected),
-    onSuccess: () => {
-      if (pathname === `/file/${selected?.id}`) navigate("/");
+    mutationFn: async () => selected && (await deleteEntry(selected)),
+    onSuccess: async () => {
+      setSelected(undefined);
       queryClient.invalidateQueries({ queryKey: ["entries"] });
+      pathname === `/${selected?.id}` && navigate("/", { replace: true });
     },
   });
 
@@ -77,24 +78,29 @@ export function SideNavContext({ children }: Props) {
               <ContextMenuSeparator />
             </>
           )}
-          <ContextMenuItem
-            inset
-            onClick={() => navigate(`file/${selected?.id}`)}
-          >
-            Open
-          </ContextMenuItem>
-          <ContextMenuItem
-            inset
-            onClick={() =>
-              window.open(
-                `${window.location.origin}/file/${selected?.id}`,
-                "_blank"
-              )
-            }
-          >
-            Open in New Tab
-          </ContextMenuItem>
-          <ContextMenuSeparator />
+          {selected?.type === EntryType.FILE && (
+            <>
+              <ContextMenuItem
+                inset
+                onClick={() => navigate(`/${selected?.id}`)}
+              >
+                Open
+              </ContextMenuItem>
+              <ContextMenuItem
+                inset
+                onClick={() =>
+                  window.open(
+                    `${window.location.origin}/${selected?.id}`,
+                    "_blank"
+                  )
+                }
+              >
+                Open in New Tab
+              </ContextMenuItem>
+              <ContextMenuSeparator />
+            </>
+          )}
+
           <DialogTrigger asChild>
             <ContextMenuItem inset>Rename</ContextMenuItem>
           </DialogTrigger>

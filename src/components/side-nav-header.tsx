@@ -1,16 +1,21 @@
-import { ChevronsLeft, FilePlus2, FolderPlus } from "lucide-react";
+import {
+  ChevronsLeft,
+  ChevronsRight,
+  FilePlus2,
+  FolderPlus,
+} from "lucide-react";
 import usePreferences from "../hooks/use-preferences";
 import useEntries from "@/hooks/use-entries";
 import { EntryType } from "@/models/entry";
 
 export default function SideNavHeader() {
-  const { setIsMenuOpen } = usePreferences();
+  const { isMenuOpen, setIsMenuOpen } = usePreferences();
   const { selected, setCreating } = useEntries();
 
   return (
-    <ul className="w-full p-3 px-4 flex flex-row justify-end items-center gap-4 text-gray-400">
+    <ul className="w-full p-3 px-4 flex flex-row justify-end items-center gap-5 text-muted-foreground/65">
       <button
-        className="hover:text-gray-800"
+        className="hover:text-muted-foreground"
         onClick={() =>
           setCreating({
             type: EntryType.FILE,
@@ -19,10 +24,10 @@ export default function SideNavHeader() {
           })
         }
       >
-        <FilePlus2 size={16} />
+        <FilePlus2 size={17} />
       </button>
       <button
-        className="hover:text-gray-800"
+        className="hover:text-muted-foreground"
         onClick={() =>
           setCreating({
             type: EntryType.FOLDER,
@@ -31,13 +36,13 @@ export default function SideNavHeader() {
           })
         }
       >
-        <FolderPlus size={16} />
+        <FolderPlus size={17} />
       </button>
       <button
-        className="hover:text-gray-800"
-        onClick={() => setIsMenuOpen(false)}
+        className="hover:text-muted-foreground"
+        onClick={() => setIsMenuOpen((prevState) => !prevState)}
       >
-        <ChevronsLeft size={22} />
+        {isMenuOpen ? <ChevronsLeft size={22} /> : <ChevronsRight size={22} />}
       </button>
     </ul>
   );

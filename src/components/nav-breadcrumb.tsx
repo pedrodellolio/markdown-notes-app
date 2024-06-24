@@ -9,9 +9,9 @@ import {
 import { useQueries } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 
-export function TopNavBreadcrumb() {
+export function NavBreadcrumb() {
   const { pathname } = useLocation();
-  const segments = decodeURIComponent(pathname).split("/").slice(2);
+  const segments = decodeURIComponent(pathname).split("/").slice(1);
 
   const entryQueries = useQueries({
     queries: segments.map((entryId) => {
@@ -37,11 +37,11 @@ export function TopNavBreadcrumb() {
                   asChild
                   className="text-muted-foreground hover:text-muted-foreground"
                 >
-                  <p className="text-sm">{entryName?.toUpperCase()}</p>
+                  <p className="text-xs">{entryName?.toUpperCase()}</p>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               {i < segments.length - 1 && (
-                <BreadcrumbSeparator className="mt-1" />
+                <BreadcrumbSeparator />
               )}
             </div>
           );

@@ -75,20 +75,6 @@ export async function getEntryChildren(parentId?: string): Promise<Entry[]> {
   }
 }
 
-export async function getPath(entry: Entry): Promise<string> {
-  if (!entry.parentId) {
-    return `/file/${entry.id}`;
-  }
-
-  const parent = await getEntryById(entry.parentId);
-  if (!parent) {
-    throw new Error(`Parent entry with id ${entry.parentId} not found`);
-  }
-
-  const parentPath = await getPath(parent);
-  return `${parentPath}${encodeURIComponent("/" + entry.id)}`;
-}
-
 export async function getEntryByPath(path: string) {
   const segments = path.split("/");
 
@@ -158,43 +144,3 @@ export async function deleteEntry(entry: Entry) {
     }
   }
 }
-
-// If path is made by entry name
-
-// export async function getPath(entry: Entry): Promise<string> {
-//   if (!entry.parentId) {
-//     return `/file/${entry.name.replace(" ", "_")}`;
-//   }
-
-//   const parent = await getEntryById(entry.parentId);
-//   if (!parent) {
-//     throw new Error(`Parent entry with id ${entry.parentId} not found`);
-//   }
-
-//   const parentPath = await getPath(parent);
-//   return `${parentPath}${encodeURIComponent(
-//     "/" + entry.name.replace(" ", "_")
-//   )}`;
-// }
-
-// export async function getEntryByPath(path: string) {
-//   const segments = path.split("/").map((p) => p.replace("_", " "));
-
-//   let currentEntry: Entry | undefined;
-//   for (const segment of segments) {
-//     if (!currentEntry) {
-//       currentEntry = await getEntryByName(segment);
-//       console.log(currentEntry);
-//     } else {
-//       const entries = await getEntryChildren(currentEntry.id);
-//       console.log(entries);
-//       currentEntry = entries.find((entry) => entry.name === segment);
-//     }
-
-//     if (!currentEntry) {
-//       return null;
-//     }
-//   }
-
-//   return currentEntry;
-// }

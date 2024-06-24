@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { SideNavContext } from "./side-nav-context";
 import NewEntryForm from "./forms/new-entry-form";
 import { useQuery } from "@tanstack/react-query";
-import { getEntryChildren, getPath } from "@/api/entry";
+import { getEntryChildren } from "@/api/entry";
 
 interface EntryItemProps {
   entry: Entry;
@@ -23,11 +23,6 @@ function EntryItem({ entry }: EntryItemProps) {
     queryKey: ["entries", entry.id],
     queryFn: () => getEntryChildren(entry.id),
     enabled: entry.type === EntryType.FOLDER && isOpen,
-  });
-
-  const { data: path } = useQuery({
-    queryKey: ["path", entry.id],
-    queryFn: () => getPath(entry),
   });
 
   useEffect(() => {
@@ -50,53 +45,58 @@ function EntryItem({ entry }: EntryItemProps) {
 
   return (
     <SideNavContext>
-      <li>
+      <li className="select-none">
         <div
           className="flex items-center space-x-2 cursor-pointer"
           onClick={toggleFolder}
         >
           <div
-            className={`flex flex-row items-center gap-2 w-full pl-4 ${
+            className={`relative flex flex-row items-center gap-2 w-full pl-3 py-1 ${
               isSelected
                 ? "bg-secondary border border-1 border-secondary-foreground/15"
-                : "hover:bg-secondary-foreground/5  "
+                : "hover:bg-secondary-foreground/5"
             }`}
           >
             {entry.type === EntryType.FOLDER ? (
-              <>
-                {isOpen ? (
-                  <ChevronDown size={14} />
-                ) : (
-                  <ChevronRight size={14} />
-                )}
-                <Folder size={16} />
-              </>
+              <div className="flex flex-row items-center gap-2 w-full">
+                <div className="absolute left-0 pl-2">
+                  {isOpen ? (
+                    <ChevronDown size={14} />
+                  ) : (
+                    <ChevronRight size={14} />
+                  )}
+                </div>
+                <div className="flex flex-row items-center gap-2 w-full">
+                  <Folder size={16} className="ml-4" />
+                  <div
+                    onClick={handleClick}
+                    onContextMenu={handleClick}
+                    className="w-48 text-card-foreground/80 truncate"
+                  >
+                    {entry.name}
+                  </div>
+                </div>
+              </div>
             ) : (
-              <File size={16} />
-            )}
-            {entry.type === EntryType.FILE && path ? (
-              <Link
-                to={path}
-                onClick={handleClick}
-                onContextMenu={handleClick}
-                className="w-full"
-              >
-                <span className="text-card-foreground/80">{entry.name}.md</span>
-                {/* <span className="text-card-foreground/35">.md</span> */}
-              </Link>
-            ) : (
-              <span
-                className="w-full"
-                onClick={handleClick}
-                onContextMenu={handleClick}
-              >
-                {entry.name}
-              </span>
+              <div className="flex flex-row items-center gap-2 w-full">
+                <File size={16} className="ml-4" />
+                <Link
+                  to={`/${entry.id}`}
+                  onClick={handleClick}
+                  onContextMenu={handleClick}
+                  className="w-48 flex flex-row items-center"
+                >
+                  <div className="text-card-foreground/80 truncate">
+                    {entry.name}
+                  </div>
+                  <div className="text-card-foreground/80">.md</div>
+                </Link>
+              </div>
             )}
           </div>
         </div>
         {entry.type === EntryType.FOLDER && isOpen && (
-          <ul className="pl-9">
+          <ul className="pl-4">
             {children?.map((child) => (
               <EntryItem key={child.id} entry={child} />
             ))}

@@ -59,7 +59,7 @@ export default function NewEntryForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-row items-center gap-2 mb-2 pl-4"
+      className="flex flex-row items-center gap-2 mb-2 pl-7"
     >
       {creating?.type === EntryType.FILE ? (
         <File size={18} className="mt-1" />

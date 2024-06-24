@@ -123,6 +123,4 @@ export const lightTheme = EditorView.theme(
   { dark: true }
 );
 
-/// Extension to enable the One Dark theme (both the editor theme and
-/// the highlight style).
 export const light: Extension = [lightTheme];

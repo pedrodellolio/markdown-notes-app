@@ -1,5 +1,3 @@
-// Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors
-
 import { Extension } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
@@ -8,7 +6,7 @@ const chalky = "#e5c07b",
   cyan = "#56b6c2",
   invalid = "#ffffff",
   ivory = "#abb2bf",
-  stone = "#7d8799", // Brightened compared to original to increase contrast
+  stone = "#7d8799",
   malibu = "#61afef",
   sage = "#98c379",
   whiskey = "#d19a66",
@@ -20,7 +18,6 @@ const chalky = "#e5c07b",
   selection = "#3E4451",
   cursor = "#528bff";
 
-/// The colors used in the theme, as CSS color strings.
 export const color = {
   chalky,
   coral,
@@ -40,19 +37,16 @@ export const color = {
   cursor,
 };
 
-/// The editor theme styles for One Dark.
 export const darkTheme = EditorView.theme(
   {
     "&": {
       color: ivory,
       backgroundColor: background,
-      // font: "'JetBrains Mono Variable', monospace",
     },
 
     ".cm-content": {
       caretColor: cursor,
       fontFamily: "'JetBrains Mono', monospace",
-      // fontFamily: "'Fira Mono', monospace",
       fontWeight: 400,
       fontSize: "0.875rem",
       height: "100%",
@@ -127,6 +121,4 @@ export const darkTheme = EditorView.theme(
   { dark: true }
 );
 
-/// Extension to enable the One Dark theme (both the editor theme and
-/// the highlight style).
 export const dark: Extension = [darkTheme];

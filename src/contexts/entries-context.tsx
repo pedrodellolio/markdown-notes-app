@@ -12,10 +12,12 @@ interface EntriesContextData {
   renaming?: Entry;
   creating?: CreatingProps;
   current?: Entry;
+  lastSaved?: Date;
   setSelected: Dispatch<SetStateAction<Entry | undefined>>;
   setRenaming: Dispatch<SetStateAction<Entry | undefined>>;
   setCreating: Dispatch<SetStateAction<CreatingProps | undefined>>;
   setCurrent: Dispatch<SetStateAction<Entry | undefined>>;
+  setLastSaved: Dispatch<SetStateAction<Date | undefined>>;
 }
 interface CreatingProps {
   type: EntryType;
@@ -34,6 +36,7 @@ export const EntriesProvider = ({ children }: Props) => {
   const [renaming, setRenaming] = useState<Entry>();
   const [creating, setCreating] = useState<CreatingProps>();
   const [current, setCurrent] = useState<Entry>();
+  const [lastSaved, setLastSaved] = useState<Date>();
 
   return (
     <EntriesContext.Provider
@@ -42,10 +45,12 @@ export const EntriesProvider = ({ children }: Props) => {
         renaming,
         creating,
         current,
+        lastSaved,
         setCurrent,
         setSelected,
         setRenaming,
         setCreating,
+        setLastSaved,
       }}
     >
       {children}

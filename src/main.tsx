@@ -1,26 +1,28 @@
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Layout from "./routes/layout";
+import Layout, { loader as layoutLoader } from "./routes/layout";
 import { PreferencesProvider } from "./contexts/preferences-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Content from "./routes/content";
+import Content, { loader as contentLoader } from "./routes/content";
 import { EntriesProvider } from "./contexts/entries-context";
 import { ThemeProvider } from "./components/theme-provider";
+import Index from "./routes";
+import ErrorPage from "./routes/error-page";
 import "@fontsource-variable/jetbrains-mono";
-import "@fontsource/geist-mono";
-import "@fontsource/fira-mono";
-import "@fontsource/fira-sans";
-import "@fontsource-variable/inter";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: <ErrorPage />,
+    loader: layoutLoader(queryClient),
     children: [
+      { index: true, element: <Index /> },
       {
-        path: "file/:path",
+        path: ":entryId",
+        loader: contentLoader(queryClient),
         element: <Content />,
       },
     ],

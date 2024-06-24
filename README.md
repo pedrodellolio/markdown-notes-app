@@ -4,10 +4,7 @@
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![SHADCN/UI](https://img.shields.io/badge/shadcn/ui-%23646CFF.svg?style=for-the-badge&logo=shadcn/ui&logoColor=white) ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white) 
 ## Descrição
-O Markdown Notes é um **editor de markdown** desenvolvido em **React**. 
-
-
-[Clique aqui](https://typeathon.vercel.app) para acessar o app.
+O Markdown Notes é um **edit or de markdown** desenvolvido em **React**. 
 
 ## Features
 - Editor de código utilizando [CodeMirror](https://codemirror.net/) e [React-CodeMirror](https://uiwjs.github.io/react-codemirror/)

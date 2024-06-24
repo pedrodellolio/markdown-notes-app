@@ -1,30 +1,38 @@
-# React + TypeScript + Vite
+![image](https://github.com/pedrodellolio/markdown-notes-app/assets/62517267/cc30e150-8427-432c-9fbc-8d9e8379a2d9)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# MARKDOWN NOTES
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white) ![SHADCN/UI](https://img.shields.io/badge/shadcn/ui-%23646CFF.svg?style=for-the-badge&logo=shadcn/ui&logoColor=white)
+## Descrição
+O Markdown Notes é um **editor de markdown** desenvolvido em **React**. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+[Clique aqui](https://typeathon.vercel.app) para acessar o app.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
+- Editor de código utilizando [CodeMirror](https://codemirror.net/) e [React-CodeMirror](https://uiwjs.github.io/react-codemirror/)
+- Preview do texto utilizando [Marked](https://github.com/markedjs/marked)
+- Suporte a edição offline utilizando IndexedDB
+- UI simples e minimalista
+- Dark/light mode
 
-- Configure the top-level `parserOptions` property like this:
+## Tecnologias Utilizadas
+- React + Vite
+- Typescript
+- IndexedDB
+- shadcn/ui + Tailwind CSS
+- Lucide Icons
+- Tanstack Query
+- CodeMirror
+- Marked
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Próximos Passos
+- Possibilidade de exportar arquivos
+- Melhorias no suporte para mobile
+- Melhorias e correções de bugs visuais
+---
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Instalação e Uso
+1. Clone o repositório: `git clone https://github.com/pedrodellolio/markdown-notes-app`
+2. Instale as dependências: `npm install`, `yarn install` ou `pnpm install`
+3. Execute o projeto: `npm run dev`, `yarn dev` ou `pnpm run dev`

@@ -28,7 +28,6 @@ O Markdown Notes é um **edit or de markdown** desenvolvido em **React**.
 - Melhorias no suporte para mobile
 - Melhorias e correções de bugs visuais
 - Tratamento de erros ao fazer operações com o banco
----
 
 ## Instalação e Uso
 1. Clone o repositório: `git clone https://github.com/pedrodellolio/markdown-notes-app.git`

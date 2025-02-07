@@ -31,6 +31,6 @@ O Markdown Notes é um **edit or de markdown** desenvolvido em **React**.
 ---
 
 ## Instalação e Uso
-1. Clone o repositório: `git clone https://github.com/pedrodellolio/markdown-notes-app`
+1. Clone o repositório: `git clone https://github.com/pedrodellolio/markdown-notes-app.git`
 2. Instale as dependências: `npm install`, `yarn install` ou `pnpm install`
 3. Execute o projeto: `npm run dev`, `yarn dev` ou `pnpm run dev`
